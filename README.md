@@ -1,5 +1,5 @@
 # mini-rag
-This is a minimal implementation of the RAG model for question answering.
+This is a minimal implementation of the RAG model for World Cup 2026.
 ## Requirements
 - Python 3.8 or later
 #### Install Python using MiniConda
@@ -18,4 +18,17 @@ $ conda activate mini-rag
 
 ```bash
 $ export PS1="\[\033[01;32m\]\u@\h:\w\n\[\033[00m\]\$ "
+```
+
+## Installation
+
+#### Install the required packages
+
+```bash
+$ pip install -r requirements.txt
+```
+
+#### Setup the environment variables
+```bash
+$ cp .env.example .env
 ```
