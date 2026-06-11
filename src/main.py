@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes import base
+from src.routes import base
 from dotenv import load_dotenv
 
 load_dotenv()
