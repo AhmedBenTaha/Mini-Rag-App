@@ -1,6 +1,6 @@
 from fastapi import FastAPI,APIRouter,Depends
 import os
-from helpers.config import get_setting,settings
+from src.helpers.config import get_setting,settings
 
 base_router = APIRouter(
     prefix='/api/v1',
