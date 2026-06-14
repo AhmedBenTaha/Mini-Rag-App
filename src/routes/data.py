@@ -78,3 +78,5 @@ async def process_endpoint(project_id:str,process_request:ProcessRequest):
                 'message':ResponseStatus.PROCESSING_FAILED.value
             }
         )
+        
+    return file_chunks    
