@@ -24,7 +24,7 @@ data_router = APIRouter(
 async def upload_data(request:Request,project_id:str,file:UploadFile,
                       app_setting:settings = Depends(get_setting)):
     
-    project_model = ProjectModel(
+    project_model = await ProjectModel.create_instance(
         db_client=request.app.db_client
     )
     project = await project_model.get_project_or_create_one(
@@ -51,6 +51,8 @@ async def upload_data(request:Request,project_id:str,file:UploadFile,
         async with aiofiles.open(file_path,'wb') as f:
             while chunk := await file.read(app_setting.FILE_DEFAULT_CHUNK_SIZE):
                 await f.write(chunk)
+                
+             
     except Exception as e:
         logger.error(f"Error while uploading file: {e}")
         return JSONResponse(
@@ -73,7 +75,7 @@ async def process_endpoint(request:Request,project_id:str,process_request:Proces
     overlap_size = process_request.overlap_size
     do_reset = process_request.do_reset
     
-    project_model = ProjectModel(
+    project_model = await ProjectModel.create_instance(
         db_client=request.app.db_client
     )
     project = await project_model.get_project_or_create_one(
@@ -108,7 +110,7 @@ async def process_endpoint(request:Request,project_id:str,process_request:Proces
         for i, chunk in enumerate(file_chunks)
     ]
 
-    chunk_model = ChunkModel(
+    chunk_model = await ChunkModel.create_instance(
         db_client=request.app.db_client
     )
     if do_reset == 1:
