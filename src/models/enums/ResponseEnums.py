@@ -6,5 +6,7 @@ class ResponseStatus(Enum):
     FILE_SIZE_EXCEEDED = "File size exceeded the limit"
     FILE_UPLOAD_SUCCESS = "File uploaded successfully"
     FILE_UPLOAD_FAILED = "File upload failed"
-    PROCESSING_SUCCESS = 'processing success'
-    PROCESSING_FAILED = 'processing failed'
+    PROCESSING_SUCCESS = "processing success"
+    PROCESSING_FAILED = "processing failed"
+    NO_FILES_ERROR = "not found files"
+    FILE_ID_ERROR = "no file found with this id"
