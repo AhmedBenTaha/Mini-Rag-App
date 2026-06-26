@@ -10,3 +10,4 @@ motor==3.4.0
 pydantic-mongo==2.3.0
 openai==1.35.13
 cohere==4.57
+groq==0.31.0

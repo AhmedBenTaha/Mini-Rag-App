@@ -3,12 +3,18 @@ from enum import Enum
 class LLMEnums(Enum):
     OPENAI = "OPENAI"
     COHERE = "COHERE"
+    GROQ = "GROQ"
     
     
 class OpenAIEnums(Enum):
     SYSTEM = "system"
     ASSISTANT = "assistant" 
     USER = "user"   
+    
+class GroqEnums(Enum):
+    SYSTEM = "system"
+    ASSISTANT = "assistant"
+    USER = "user"    
     
     
 class CoHereEnums(Enum):
