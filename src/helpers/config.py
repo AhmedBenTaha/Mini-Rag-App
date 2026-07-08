@@ -20,6 +20,7 @@ class settings(BaseSettings):
     OPENAI_API_KEY: str = None
     OPENAI_API_URL: str = None
     COHERE_API_KEY: str = None
+    VOYAGE_API_KEY: str = None
 
     GENERATION_MODEL_ID: str = None
     EMBEDDING_MODEL_ID: str = None
@@ -31,6 +32,9 @@ class settings(BaseSettings):
     VECTOR_DB_BACKEND : str
     VECTOR_DB_PATH : str
     VECTOR_DB_DISTANCE_METHOD: str = None
+    
+    PRIMARY_LANG: str = None
+    DEFAULT_LANG: str = None
 
     class Config:
         env_file = 'src/.env'
