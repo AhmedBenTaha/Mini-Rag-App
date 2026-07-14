@@ -4,6 +4,7 @@ class LLMEnums(Enum):
     OPENAI = "OPENAI"
     COHERE = "COHERE"
     GROQ = "GROQ"
+    VOYAGE = "VOYAGE"
     
     
 class OpenAIEnums(Enum):
@@ -29,3 +30,8 @@ class CoHereEnums(Enum):
 class DocumentTypeEnum(Enum):
     DOCUMENT = "document"
     QUERY = "query"    
+    
+class VoyageEnums(Enum):
+    DOCUMENT = "document"
+    QUERY = "query"
+        

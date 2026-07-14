@@ -26,13 +26,16 @@ class GroqProvider(LLMInterface):
 
         self.generation_model_id = None
 
-        # Initialize Groq client
         self.client = Groq(api_key=self.api_key)
-
+        self.enums = GroqEnums
         self.logger = logging.getLogger(__name__)
 
     def set_generation_model(self, model_id: str):
         self.generation_model_id = model_id
+
+    def set_embedding_model(self, model_id: str, embedding_size: int):
+        # Groq doesn't support embeddings
+        pass
 
     def process_text(self, text: str):
         return text[: self.default_input_max_characters].strip()
@@ -40,16 +43,13 @@ class GroqProvider(LLMInterface):
     def generate_text(
         self,
         prompt: str,
-        chat_history: list = None,
+        chat_history: list = [],
         max_output_tokens: int = None,
         temperature: float = None,
     ):
 
-        if chat_history is None:
-            chat_history = []
-
         if not self.client:
-            self.logger.error("Groq client was not initialized")
+            self.logger.error("Groq client was not set")
             return None
 
         if not self.generation_model_id:
@@ -58,7 +58,7 @@ class GroqProvider(LLMInterface):
 
         max_output_tokens = (
             max_output_tokens
-            if max_output_tokens is not None
+            if max_output_tokens
             else self.default_generation_max_output_tokens
         )
 
@@ -68,7 +68,8 @@ class GroqProvider(LLMInterface):
             else self.default_generation_temperature
         )
 
-        chat_history.append(
+        messages = list(chat_history)
+        messages.append(
             self.construct_prompt(
                 prompt=prompt,
                 role=GroqEnums.USER.value,
@@ -77,20 +78,25 @@ class GroqProvider(LLMInterface):
 
         response = self.client.chat.completions.create(
             model=self.generation_model_id,
-            messages=chat_history,
+            messages=messages,
             max_tokens=max_output_tokens,
             temperature=temperature,
         )
 
         if (
-            response is None
-            or response.choices is None
+            not response
+            or not response.choices
             or len(response.choices) == 0
         ):
             self.logger.error("Error while generating text with Groq")
             return None
 
         return response.choices[0].message.content
+
+    def embed_text(self, text: str, document_type: str = None):
+        raise NotImplementedError(
+            "Groq does not support embedding models."
+        )
 
     def construct_prompt(self, prompt: str, role: str):
         return {
