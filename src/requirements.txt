@@ -13,3 +13,7 @@ cohere==5.13.2
 groq==0.31.0
 qdrant-client==1.10.1
 voyageai==0.1.6
+SQLAlchemy==2.0.36
+asyncpg==0.30.0
+alembic==1.14.0
+psycopg2==2.9.10
