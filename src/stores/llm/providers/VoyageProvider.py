@@ -2,7 +2,7 @@ from ..LLMInterface import LLMInterface
 from ..LLMEnums import DocumentTypeEnum,VoyageEnums
 import voyageai
 import logging
-
+from typing import Union, List
 
 class VoyageProvider(LLMInterface):
 
@@ -54,11 +54,14 @@ class VoyageProvider(LLMInterface):
             "Voyage AI does not support text generation."
         )
 
-    def embed_text(self, text: str, document_type: str = None):
+    def embed_text(self, text: Union[str,List[str]], document_type: str = None):
 
         if not self.client:
             self.logger.error("Voyage client was not initialized")
             return None
+        
+        if isinstance(text,str):
+            text = [text]
 
         if not self.embedding_model_id:
             self.logger.error("Embedding model for Voyage was not set")
@@ -71,7 +74,7 @@ class VoyageProvider(LLMInterface):
 
         try:
             response = self.client.embed(
-                texts=[self.process_text(text)],
+                texts=[self.process_text(t) for t in text ],
                 model=self.embedding_model_id,
                 input_type=input_type,
             )
@@ -84,7 +87,7 @@ class VoyageProvider(LLMInterface):
                 self.logger.error("Error while embedding text with Voyage")
                 return None
 
-            return response.embeddings[0]
+            return [f for f in response.embeddings.float ]
 
         except Exception as e:
             self.logger.exception(f"Voyage embedding failed: {e}")
