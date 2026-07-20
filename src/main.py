@@ -20,7 +20,7 @@ async def startup_span():
     )
     
     llm_provider_factory = LLMProviderFactory(setting)
-    vectordb_provider_factory = VectorDBProviderFactory(setting)
+    vectordb_provider_factory = VectorDBProviderFactory(config=setting,db_client=app.db_client)
     
     # generation client
     
@@ -34,7 +34,7 @@ async def startup_span():
 
     # vector db client
     app.vectordb_client = vectordb_provider_factory.create(provider=setting.VECTOR_DB_BACKEND)
-    app.vectordb_client.connect()
+    await app.vectordb_client.connect()
     
     app.template_parser = TemplateParser(
         language=setting.PRIMARY_LANG,
@@ -42,7 +42,7 @@ async def startup_span():
     )
 async def shutdown_span():
     app.db_engine.dispose()
-    app.vectordb_client.disconnect()
+    await app.vectordb_client.disconnect()
 
 
 app.on_event("startup")(startup_span)
