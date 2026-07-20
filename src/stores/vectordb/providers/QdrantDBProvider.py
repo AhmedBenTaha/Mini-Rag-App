@@ -8,21 +8,23 @@ from src.models.db_schemes import RetrievedDocument
 
 class QdrantDBProvider(VectorDBInterface):
 
-    def __init__(self, db_path: str, distance_method: str):
+    def __init__(self, db_client: str, default_vector_size: int = 786,
+                       distance_method: str = None, index_threshold: int=100):
 
         self.client = None
-        self.db_path = db_path
+        self.db_client = db_client
         self.distance_method = None
+        self.default_vector_size = default_vector_size
 
         if distance_method == DistanceMethodEnums.COSINE.value:
             self.distance_method = models.Distance.COSINE
         elif distance_method == DistanceMethodEnums.DOT.value:
             self.distance_method = models.Distance.DOT
 
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger("uvicorn")
 
     def connect(self):
-        self.client = QdrantClient(path=self.db_path)
+        self.client = QdrantClient(path=self.db_client)
 
     def disconnect(self):
         self.client = None
@@ -47,6 +49,7 @@ class QdrantDBProvider(VectorDBInterface):
             _ = self.delete_collection(collection_name=collection_name)
         
         if not self.is_collection_existed(collection_name):
+            self.logger.info(f"creating new qdrant collection : {collection_name}")
             _ = self.client.create_collection(
                 collection_name=collection_name,
                 vectors_config=models.VectorParams(
