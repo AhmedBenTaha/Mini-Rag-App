@@ -13,6 +13,7 @@ from src.models.ChunkModel import ChunkModel
 from src.models.AssetModel import AssetModel
 from src.models.db_schemes import DataChunk
 from src.models.db_schemes import Asset
+from src.controllers.NLPController import NLPController
 
 
 logger = logging.getLogger('uvicorn_error')
@@ -91,6 +92,14 @@ async def process_endpoint(request:Request,project_id:int,process_request:Proces
     overlap_size = process_request.overlap_size
     do_reset = process_request.do_reset
     
+    
+    nlp_controller = NLPController(
+        vectordb_client=request.app.vectordb_client,
+        generation_client=request.app.generation_client,
+        embedding_client=request.app.embedding_client,
+        template_parser=request.app.template_parser
+    )
+    
     project_model = await ProjectModel.create_instance(
         db_client=request.app.db_client
     )
@@ -145,6 +154,8 @@ async def process_endpoint(request:Request,project_id:int,process_request:Proces
             db_client=request.app.db_client
         )
     if do_reset == 1:
+        collection_name = nlp_controller.create_collection_name(project_id=project.project_id)
+        _ = await request.app.vectordb_client.delete_collection(collection_name=collection_name)
         _ = await chunk_model.delete_chunks_by_project_id(
             project_id=project.project_id
             )
